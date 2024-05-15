@@ -1,13 +1,9 @@
 package com.capgemini.wsb.persistence.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "PATIENT")
@@ -33,6 +29,34 @@ public class PatientEntity {
 
 	@Column(nullable = false)
 	private LocalDate dateOfBirth;
+
+	@Column(nullable = false)
+	private Boolean hasInsurance;
+
+	// Relacja jednostronna od strony rodzica
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "ADDRESS_ID", nullable = false)
+	private AddressEntity address;
+
+	// Relacja dwustronna
+	@OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, orphanRemoval = true)
+	private List<VisitEntity> visits;
+
+	public List<VisitEntity> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(List<VisitEntity> visits) {
+		this.visits = visits;
+	}
+
+	public AddressEntity getAddress() {
+		return address;
+	}
+
+	public void setAddress(AddressEntity address) {
+		this.address = address;
+	}
 
 	public Long getId() {
 		return id;
@@ -90,4 +114,11 @@ public class PatientEntity {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public Boolean getHasInsurance() {
+		return hasInsurance;
+	}
+
+	public void setHasInsurance(Boolean hasInsurance) {
+		this.hasInsurance = hasInsurance;
+	}
 }
